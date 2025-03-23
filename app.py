@@ -63,8 +63,8 @@ def try_on():
         garment_data = garment_image.read()
 
         files = {
-            'person_image': (person_filename, person_data, 'image/jpeg'),
-            'garment_image': (garment_filename, garment_data, 'image/jpeg')
+            'person_image': (person_filename, person_data, person_image.content_type),
+            'garment_image': (garment_filename, garment_data, garment_image.content_type)
         }
 
         headers = {'X-API-KEY': PIXELCUT_API_KEY}
