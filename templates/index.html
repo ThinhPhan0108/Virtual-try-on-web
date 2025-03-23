@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Thử đồ ảo trực tuyến với công nghệ AI. Virtual Try-On giúp bạn thử quần áo dễ dàng hơn bao giờ hết.">
+    <meta name="keywords" content="thử đồ ảo, virtual try-on, AI, quần áo, thời trang, mua sắm trực tuyến">
+    <title>Thử Đồ Ảo - Virtual Try-On</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tshirt"></i> Thử Đồ Ảo</h1>
+            <p class="subtitle">Thử quần áo trực tuyến với công nghệ AI</p>
+        </header>
+
+        <div class="instructions">
+            <div class="instruction-step">
+                <div class="step-number">1</div>
+                <div class="step-text">Tải lên ảnh của bạn</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">2</div>
+                <div class="step-text">Tải lên ảnh quần áo</div>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">3</div>
+                <div class="step-text">Xem kết quả thử đồ</div>
+            </div>
+        </div>
+
+        <div class="upload-container">
+            <div class="upload-section">
+                <h2><i class="fas fa-user"></i> Ảnh Người</h2>
+                <div id="person-drop" class="drop-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Kéo và thả ảnh người vào đây hoặc</p>
+                    <label for="person_image" class="file-label">Chọn Ảnh</label>
+                    <input type="file" id="person_image" name="person_image" accept="image/*" required>
+                </div>
+                <div id="person-img-preview" class="img-preview"></div>
+            </div>
+
+            <div class="upload-section">
+                <h2><i class="fas fa-tshirt"></i> Ảnh Quần Áo</h2>
+                <div id="garment-drop" class="drop-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Kéo và thả ảnh quần áo vào đây hoặc</p>
+                    <label for="garment_image" class="file-label">Chọn Ảnh</label>
+                    <input type="file" id="garment_image" name="garment_image" accept="image/*" required>
+                </div>
+                <div id="garment-img-preview" class="img-preview"></div>
+            </div>
+        </div>
+
+        <div class="action-container">
+            <button id="try-on-btn" class="primary-btn">
+                <i class="fas fa-magic"></i> Thử Đồ Ngay
+            </button>
+        </div>
+
+        <div id="loading" class="loading-container" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Đang xử lý... Vui lòng đợi trong giây lát</p>
+        </div>
+
+        <div id="result" class="result-container" style="display: none;">
+            <h2><i class="fas fa-check-circle"></i> Kết Quả Thử Đồ</h2>
+            <div class="result-image-container">
+                <img id="output-img" src="" alt="Kết quả thử đồ" />
+            </div>
+            <div class="result-actions">
+                <button id="download-btn" class="secondary-btn">
+                    <i class="fas fa-download"></i> Tải Ảnh
+                </button>
+                <button id="share-btn" class="secondary-btn">
+                    <i class="fas fa-share-alt"></i> Chia Sẻ
+                </button>
+                <button id="try-again-btn" class="secondary-btn">
+                    <i class="fas fa-redo"></i> Thử Lại
+                </button>
+            </div>
+        </div>
+
+        <div id="error-message" class="error-container" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <p id="error-text"></p>
+            <button id="dismiss-error" class="secondary-btn">Đóng</button>
+        </div>
+
+        <footer>
+            <p>© 2025 Thử Đồ Ảo - Công nghệ AI giúp bạn thử quần áo trực tuyến</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

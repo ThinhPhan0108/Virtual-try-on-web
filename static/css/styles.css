@@ -1,0 +1,374 @@
+/* Biến CSS */
+:root {
+    --primary-color: #4a6bff;
+    --secondary-color: #ff6b6b;
+    --accent-color: #6bffb8;
+    --dark-color: #333;
+    --light-color: #f8f9fa;
+    --gray-color: #e9ecef;
+    --text-color: #495057;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+/* Reset và Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Container chính */
+.container {
+    width: 100%;
+    max-width: 1000px;
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin: 20px auto;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--gray-color);
+}
+
+header h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+/* Hướng dẫn */
+.instructions {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.instruction-step {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+}
+
+.instruction-step:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    background-color: var(--primary-color);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.step-text {
+    font-weight: 500;
+}
+
+/* Khu vực tải lên */
+.upload-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.upload-section {
+    flex: 1;
+    min-width: 300px;
+    margin: 10px;
+    padding: 20px;
+    background-color: var(--light-color);
+    border-radius: var(--border-radius);
+}
+
+.upload-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+}
+
+.upload-section h2 i {
+    margin-right: 10px;
+}
+
+.drop-area {
+    border: 2px dashed var(--primary-color);
+    padding: 30px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    cursor: pointer;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.drop-area:hover {
+    background-color: rgba(74, 107, 255, 0.05);
+}
+
+.drop-area.hover {
+    background-color: rgba(74, 107, 255, 0.1);
+    border-color: var(--secondary-color);
+}
+
+.drop-area i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.drop-area p {
+    margin-bottom: 15px;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.file-label:hover {
+    background-color: #3a5ae0;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.img-preview {
+    margin-top: 15px;
+    min-height: 100px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background-color: var(--gray-color);
+}
+
+.img-preview img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+/* Nút hành động */
+.action-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.primary-btn {
+    padding: 12px 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    display: inline-flex;
+    align-items: center;
+}
+
+.primary-btn i {
+    margin-right: 10px;
+}
+
+.primary-btn:hover {
+    background-color: #3a5ae0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 107, 255, 0.3);
+}
+
+.secondary-btn {
+    padding: 8px 20px;
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: var(--transition);
+    margin: 0 5px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.secondary-btn i {
+    margin-right: 8px;
+}
+
+.secondary-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Loading */
+.loading-container {
+    text-align: center;
+    padding: 30px;
+    margin: 20px 0;
+    border-radius: var(--border-radius);
+    background-color: var(--light-color);
+    box-shadow: var(--shadow);
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--gray-color);
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Kết quả */
+.result-container {
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: var(--border-radius);
+    background-color: var(--light-color);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.result-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.result-container h2 i {
+    margin-right: 10px;
+    color: #4CAF50;
+}
+
+.result-image-container {
+    margin: 20px auto;
+    max-width: 500px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.result-image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.result-actions {
+    margin-top: 20px;
+}
+
+/* Thông báo lỗi */
+.error-container {
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: var(--border-radius);
+    background-color: #fff5f5;
+    border: 1px solid #ffcccc;
+    color: #d63031;
+    text-align: center;
+}
+
+.error-container i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-color);
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    
+    .upload-container {
+        flex-direction: column;
+    }
+    
+    .upload-section {
+        margin: 10px 0;
+    }
+    
+    .instructions {
+        flex-direction: column;
+    }
+    
+    .instruction-step {
+        margin: 5px 0;
+    }
+    
+    .result-actions {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .secondary-btn {
+        margin: 5px 0;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+}
