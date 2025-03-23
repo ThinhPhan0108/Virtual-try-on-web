@@ -109,6 +109,7 @@ def try_on():
         return jsonify({'error': f'Lỗi cấu hình: {str(ve)}'}), 400
     except Exception as e:
         logging.error(f"Có lỗi xảy ra: {str(e)}")
+        print(f"Exception: {str(e)}")
         return jsonify({'error': f'Có lỗi xảy ra: {str(e)}'}), 500
 
 if __name__ == '__main__':
