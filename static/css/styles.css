@@ -327,6 +327,21 @@ input[type="file"] {
     margin-bottom: 10px;
 }
 
+/* Quality Container */
+.quality-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.quality-container label {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.quality-container input[type="range"] {
+    width: 200px;
+}
+
 /* Footer */
 footer {
     text-align: center;

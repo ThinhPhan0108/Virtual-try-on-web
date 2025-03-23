@@ -33,17 +33,24 @@ function resizeImage(file, maxWidth, maxHeight) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
+            const quality = document.getElementById('quality').value;
+
             canvas.toBlob(blob => {
                 resolve(new File([blob], file.name, {
                     type: file.type,
                     lastModified: file.lastModified
                 }));
-            }, file.type, 0.7); // Adjust compression quality as needed
+            }, file.type, quality); // Adjust compression quality as needed
         };
         img.onerror = reject;
         img.src = URL.createObjectURL(file);
     });
 }
+
+// Update quality value display
+document.getElementById('quality').addEventListener('input', function() {
+    document.getElementById('quality-value').textContent = this.value;
+});
 
 // Cài đặt để hiển thị ảnh khi kéo và thả
 setupDropArea('person-drop', file => {
@@ -100,7 +107,8 @@ document.getElementById('try-on-btn').onclick = () => {
     })
     .catch(err => {
         console.error(err);
-        alert('Có lỗi xảy ra, vui lòng thử lại!');
+        document.getElementById('error-text').textContent = 'Có lỗi xảy ra, vui lòng thử lại!';
+        document.getElementById('error-message').style.display = 'block';
         // Hide loading indicator
         document.getElementById('loading').style.display = 'none';
     });

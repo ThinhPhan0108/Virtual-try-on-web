@@ -11,6 +11,9 @@ load_dotenv()
 
 # Lấy API Key từ biến môi trường
 PIXELCUT_API_KEY = os.getenv("PIXELCUT_API_KEY")
+if not PIXELCUT_API_KEY:
+    logging.error("PIXELCUT_API_KEY is not set in the environment variables.")
+    raise ValueError("PIXELCUT_API_KEY is not set in the environment variables.")
 NGROK_URL = os.getenv("NGROK_URL", "127.0.0.1:5000")
 
 # Kiểm tra giá trị API Key và URL ngrok
@@ -101,6 +104,9 @@ def try_on():
             logging.error(f"Lỗi từ API: {response.status_code} - {error_message}")
             return jsonify({'error': f'Lỗi từ API: {response.status_code} - {error_message}'}), 400
 
+    except ValueError as ve:
+        logging.error(f"Lỗi cấu hình: {str(ve)}")
+        return jsonify({'error': f'Lỗi cấu hình: {str(ve)}'}), 400
     except Exception as e:
         logging.error(f"Có lỗi xảy ra: {str(e)}")
         return jsonify({'error': f'Có lỗi xảy ra: {str(e)}'}), 500
