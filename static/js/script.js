@@ -93,7 +93,10 @@ document.getElementById('try-on-btn').onclick = () => {
 
     fetch('/try-on', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
     })
     .then(res => {
         if (!res.ok) {
