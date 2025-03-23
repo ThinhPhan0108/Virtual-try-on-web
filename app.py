@@ -21,7 +21,7 @@ NGROK_URL = os.getenv("NGROK_URL", "127.0.0.1:5000")
 # print(f"NGROK_URL: {NGROK_URL}")
 
 # Cấu hình logging
-logging.basicConfig(filename='error.log', level=logging.ERROR,
+logging.basicConfig(filename='error.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s: %(message)s')
 
 app = Flask(__name__)
@@ -123,4 +123,5 @@ def try_on():
         return jsonify({'error': f'Có lỗi xảy ra: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
