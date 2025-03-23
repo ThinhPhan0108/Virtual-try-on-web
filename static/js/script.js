@@ -54,21 +54,15 @@ document.getElementById('quality').addEventListener('input', function() {
 
 document.getElementById('person_image').addEventListener('change', function() {
     if (this.files && this.files[0]) {
-        resizeImage(this.files[0], 800, 800)
-            .then(resizedFile => {
-                personFile = resizedFile;
-                displayImagePreview(resizedFile, 'person-img-preview');
-            });
+        personFile = this.files[0];
+        displayImagePreview(this.files[0], 'person-img-preview');
     }
 });
 
 document.getElementById('garment_image').addEventListener('change', function() {
     if (this.files && this.files[0]) {
-        resizeImage(this.files[0], 800, 800)
-            .then(resizedFile => {
-                garmentFile = resizedFile;
-                displayImagePreview(resizedFile, 'garment-img-preview');
-            });
+        garmentFile = this.files[0];
+        displayImagePreview(this.files[0], 'garment-img-preview');
     }
 });
 
