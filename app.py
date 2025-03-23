@@ -69,6 +69,16 @@ def try_on():
 
         headers = {'X-API-KEY': PIXELCUT_API_KEY}
 
+        print("Request Headers:", request.headers)
+        print("Files:", files)
+
+        # Prepare the data for printing
+        files_str = ""
+        for k, v in files.items():
+            files_str += f"{k}: filename={v[0]}, content_type={v[2]}\n"
+
+        print(f"Files data:\n{files_str}")
+
         response = requests.post(PIXELCUT_API_ENDPOINT, headers=headers, files=files)
 
         if response.status_code == 200:
