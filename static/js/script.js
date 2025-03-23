@@ -52,28 +52,17 @@ document.getElementById('quality').addEventListener('input', function() {
     document.getElementById('quality-value').textContent = this.value;
 });
 
-// Cài đặt để hiển thị ảnh khi kéo và thả
-setupDropArea('person-drop', file => {
-    resizeImage(file, 800, 800)
-        .then(resizedFile => {
-            personFile = resizedFile;
-            displayImagePreview(resizedFile, 'person-img-preview');
-        });
-});
-
-setupDropArea('garment-drop', file => {
-    resizeImage(file, 800, 800)
-        .then(resizedFile => {
-            garmentFile = resizedFile;
-            displayImagePreview(resizedFile, 'garment-img-preview');
-        });
-});
-
 document.getElementById('try-on-btn').onclick = () => {
-    if (!personFile || !garmentFile) {
+    const personImageInput = document.getElementById('person_image');
+    const garmentImageInput = document.getElementById('garment_image');
+
+    if (!personImageInput.files[0] || !garmentImageInput.files[0]) {
         alert("Vui lòng chọn cả hai ảnh!");
         return;
     }
+
+    const personFile = personImageInput.files[0];
+    const garmentFile = garmentImageInput.files[0];
 
     // Show loading indicator
     document.getElementById('loading').style.display = 'block';
@@ -100,7 +89,8 @@ document.getElementById('try-on-btn').onclick = () => {
             outputImage.style.display = 'block';  // Hiển thị ảnh output
         } else {
             // Hiển thị lỗi
-            document.getElementById('result').textContent = 'Lỗi: ' + (data.error || 'Không có ảnh trả về');
+           document.getElementById('error-text').textContent = 'Lỗi: ' + (data.error || 'Không có ảnh trả về');
+           document.getElementById('error-message').style.display = 'block';
         }
         // Hide loading indicator
         document.getElementById('loading').style.display = 'none';
