@@ -52,6 +52,26 @@ document.getElementById('quality').addEventListener('input', function() {
     document.getElementById('quality-value').textContent = this.value;
 });
 
+document.getElementById('person_image').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        resizeImage(this.files[0], 800, 800)
+            .then(resizedFile => {
+                personFile = resizedFile;
+                displayImagePreview(resizedFile, 'person-img-preview');
+            });
+    }
+});
+
+document.getElementById('garment_image').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        resizeImage(this.files[0], 800, 800)
+            .then(resizedFile => {
+                garmentFile = resizedFile;
+                displayImagePreview(resizedFile, 'garment-img-preview');
+            });
+    }
+});
+
 document.getElementById('try-on-btn').onclick = () => {
     const personImageInput = document.getElementById('person_image');
     const garmentImageInput = document.getElementById('garment_image');
