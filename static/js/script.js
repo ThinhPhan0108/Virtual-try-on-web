@@ -89,7 +89,7 @@ document.getElementById('try-on-btn').onclick = () => {
         method: 'POST',
         body: formData,
         headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': null
         }
     })
     .then(res => {
