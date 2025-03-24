@@ -6,15 +6,15 @@ import requests
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
-# Tải biến môi trường từ file .env
+# Tải biến môi trường từ file .env (nếu có)
 load_dotenv()
 
 # Lấy API Key từ biến môi trường
-PIXELCUT_API_KEY = os.getenv("PIXELCUT_API_KEY")
+PIXELCUT_API_KEY = os.environ.get("PIXELCUT_API_KEY")
 if not PIXELCUT_API_KEY:
     logging.error("PIXELCUT_API_KEY is not set in the environment variables.")
     raise ValueError("PIXELCUT_API_KEY is not set in the environment variables.")
-NGROK_URL = os.getenv("NGROK_URL", "127.0.0.1:5000")
+NGROK_URL = os.environ.get("NGROK_URL", "127.0.0.1:5000")
 
 # Kiểm tra giá trị API Key và URL ngrok
 # print(f"PIXELCUT_API_KEY: {PIXELCUT_API_KEY}")
