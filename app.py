@@ -79,18 +79,24 @@ def try_on():
 
         print(f"Files data:\n{files_str}")
 
-        response = requests.post(PIXELCUT_API_ENDPOINT, headers=headers, files=files)
+        try:
+            response = requests.post(PIXELCUT_API_ENDPOINT, headers=headers, files=files)
+            response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+        except requests.exceptions.RequestException as req_err:
+            logging.error(f"Lỗi khi gửi yêu cầu đến Pixelcut API: {str(req_err)}")
+            return jsonify({'error': f'Lỗi khi gửi yêu cầu đến Pixelcut API: {str(req_err)}'}), 500
 
         if response.status_code == 200:
             result = response.json()
-            
+
             # Nếu API trả về URL ảnh kết quả
             if 'result_url' in result:
                 try:
                     # Tải ảnh từ URL kết quả
                     result_url = result['result_url']
                     img_response = requests.get(result_url, stream=True)
-                    
+                    img_response.raise_for_status()
+
                     if img_response.status_code == 200:
                         # Tạo tên file duy nhất cho ảnh kết quả
                         result_filename = f"result_{uuid.uuid4()}.jpg"
@@ -104,9 +110,12 @@ def try_on():
                         # Trả về URL local của ảnh kết quả
                         local_result_url = f"/static/uploads/{result_filename}"
                         result['local_result_url'] = local_result_url
+                except requests.exceptions.RequestException as img_err:
+                    logging.error(f"Lỗi khi tải ảnh kết quả: {str(img_err)}")
+                    result['local_result_url'] = None  # Set a default value
                 except Exception as img_error:
-                    logging.error(f"Lỗi khi tải ảnh kết quả: {str(img_error)}")
-                    # Vẫn giữ URL gốc nếu có lỗi khi tải ảnh
+                    logging.error(f"Lỗi khi xử lý ảnh kết quả: {str(img_error)}")
+                    result['local_result_url'] = None  # Set a default value
 
             return jsonify(result)
         else:
