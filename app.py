@@ -52,6 +52,17 @@ def try_on():
 
         garment_filename = "garment_image.jpg"
         garment_data = garment_image.read()
+
+        person_image_obj = Image.open(io.BytesIO(person_data))
+        person_format = person_image_obj.format
+        person_size = person_image_obj.size
+        logging.info(f"Person image format: {person_format}, size: {person_size}")
+
+        garment_image_obj = Image.open(io.BytesIO(garment_data))
+        garment_format = garment_image_obj.format
+        garment_size = garment_image_obj.size
+        logging.info(f"Garment image format: {garment_format}, size: {garment_size}")
+
         person_data = resize_image(person_data)
         garment_data = resize_image(garment_data)
 
