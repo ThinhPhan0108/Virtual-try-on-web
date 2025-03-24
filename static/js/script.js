@@ -99,37 +99,20 @@ document.getElementById('try-on-btn').onclick = () => {
             })
             .then(data => {
                 console.log("API Response:", data); // Log the API response
-                if (data.image_data) {
-                    // Hiển thị ảnh kết quả từ base64
-                    const outputImage = document.getElementById('output-img');
-                    try {
-                        outputImage.src = "data:image/jpeg;base64," + data.image_data;
-                        outputImage.style.display = 'block';  // Hiển thị ảnh output
-                        console.log("Output Image Source:", outputImage.src); // Log the output image source
-                    } catch (e) {
-                        console.error("Error setting image source:", e);
-                        document.getElementById('error-text').textContent = 'Lỗi hiển thị ảnh!';
-                        document.getElementById('error-message').style.display = 'block';
-                    }
-                } else if (data.result_url) {
-                    // Hiển thị ảnh kết quả
-                    const outputImage = document.getElementById('output-img');
-                    try {
-                        outputImage.src = data.result_url;
-                        outputImage.style.display = 'block';  // Hiển thị ảnh output
-                        console.log("Output Image Source:", outputImage.src); // Log the output image source
-                    } catch (e) {
-                        console.error("Error setting image source:", e);
-                         document.getElementById('error-text').textContent = 'Lỗi hiển thị ảnh!';
-                        document.getElementById('error-message').style.display = 'block';
-                    }
-                }
-                 else {
-                    // Hiển thị lỗi
-                    document.getElementById('error-text').textContent = 'Lỗi: ' + (data.error || 'Không có ảnh trả về');
+                // Hiển thị ảnh kết quả
+                const outputImage = document.getElementById('output-img');
+                try {
+                    outputImage.src = data.result_url + '?timestamp=' + new Date().getTime();
+                    outputImage.style.display = 'block';  // Hiển thị ảnh output
+                    document.getElementById('result').style.display = 'block';
+                    document.getElementById('loading').style.display = 'none';
+                    console.log("Output Image Source:", data.result_url); // Log the output image source
+                } catch (e) {
+                    console.error("Error setting image source:", e);
+                     document.getElementById('error-text').textContent = 'Lỗi hiển thị ảnh!';
                     document.getElementById('error-message').style.display = 'block';
                 }
-                // Hide loading indicator
+                 // Hide loading indicator
                 document.getElementById('loading').style.display = 'none';
             })
             .catch(err => {

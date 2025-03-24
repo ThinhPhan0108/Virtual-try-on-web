@@ -10,11 +10,11 @@ import logging
 
 load_dotenv()
 
-def resize_image(image_data, max_size=(500, 500)):
+def resize_image(image_data, max_size=(800, 800)):
     image = Image.open(io.BytesIO(image_data))
     image.thumbnail(max_size)
     img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format='JPEG', quality=50)
+    image.save(img_byte_arr, format='JPEG', quality=85)
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr
 
@@ -84,13 +84,21 @@ def try_on():
                         for chunk in img_response.iter_content(1024):
                             img_byte_arr.write(chunk)
                         img_byte_arr = img_byte_arr.getvalue()
-                        result['image_data'] = base64.b64encode(img_byte_arr).decode('utf-8')
+
+                        # Save the image to the static/uploads directory
+                        filename = secure_filename(os.urandom(16).hex() + '.jpg')
+                        filepath = 'static/uploads/' + filename
+                        with open(filepath, 'wb') as f:
+                            f.write(img_byte_arr)
+
+                        result_url =  '/' + filepath  # Construct the URL
+                        result['result_url'] = result_url
                 except requests.exceptions.RequestException as img_err:
                     logging.error(f"Error downloading result image: {str(img_err)}")
-                    result['image_data'] = None
+                    return jsonify({'error': f'Error downloading result image: {str(img_err)}'}), 500
                 except Exception as img_error:
                     logging.error(f"Error processing result image: {str(img_error)}")
-                    result['image_data'] = None
+                    return jsonify({'error': f'Error processing result image: {str(img_error)}'}), 500
 
             return jsonify(result)
         else:

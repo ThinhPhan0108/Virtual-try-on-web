@@ -1,15 +1,16 @@
 /* Biến CSS */
 :root {
-    --primary-color: #4a6bff;
-    --secondary-color: #ff6b6b;
-    --accent-color: #6bffb8;
-    --dark-color: #333;
-    --light-color: #f8f9fa;
-    --gray-color: #e9ecef;
-    --text-color: #495057;
-    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    --border-radius: 12px;
-    --transition: all 0.3s ease;
+    --primary-color: #FF69B4; /* Hot Pink */
+    --secondary-color: #FFD700; /* Gold */
+    --accent-color: #7CFC00; /* Lawn Green */
+    --dark-color: #1E90FF; /* Dodger Blue */
+    --light-color: #FFFFFF;
+    --gray-color: #D3D3D3;
+    --text-color: #696969;
+    --shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    --border-radius: 20px;
+    --transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    --font-family: 'Poppins', sans-serif;
 }
 
 /* Reset và Base Styles */
@@ -20,25 +21,28 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    font-family: var(--font-family);
+    background: linear-gradient(45deg, #FFC0CB, #B0E2FF); /* Pastel Pink and Light Blue */
     color: var(--text-color);
-    line-height: 1.6;
+    line-height: 1.7;
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 20px;
     min-height: 100vh;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* Container chính */
 .container {
     width: 100%;
     max-width: 1000px;
-    background: white;
+    background: var(--light-color);
     padding: 30px;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
     margin: 20px auto;
+    transition: var(--transition);
 }
 
 /* Header */
@@ -47,12 +51,26 @@ header {
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--gray-color);
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 header h1 {
     color: var(--primary-color);
-    font-size: 2.5rem;
+    font-size: 3.0rem;
     margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .subtitle {
@@ -79,6 +97,7 @@ header h1 {
 
 .instruction-step:hover {
     transform: translateY(-5px);
+    box-shadow: var(--shadow);
 }
 
 .step-number {
@@ -113,6 +132,13 @@ header h1 {
     padding: 20px;
     background-color: var(--light-color);
     border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.upload-section:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .upload-section h2 {
@@ -181,6 +207,7 @@ input[type="file"] {
     border-radius: var(--border-radius);
     overflow: hidden;
     background-color: var(--gray-color);
+    transition: var(--transition);
 }
 
 .img-preview img {
@@ -204,12 +231,13 @@ input[type="file"] {
     border: none;
     cursor: pointer;
     border-radius: var(--border-radius);
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 700;
     transition: var(--transition);
     box-shadow: var(--shadow);
     display: inline-flex;
     align-items: center;
+    justify-content: center;
 }
 
 .primary-btn i {
@@ -219,7 +247,7 @@ input[type="file"] {
 .primary-btn:hover {
     background-color: #3a5ae0;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(74, 107, 255, 0.3);
+    box-shadow: 0 6px 20px rgba(41, 171, 226, 0.5);
 }
 
 .secondary-btn {
@@ -243,6 +271,8 @@ input[type="file"] {
 .secondary-btn:hover {
     background-color: var(--primary-color);
     color: white;
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
 }
 
 /* Loading */
@@ -256,13 +286,28 @@ input[type="file"] {
 }
 
 .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid var(--gray-color);
-    border-top: 5px solid var(--primary-color);
+    width: 60px;
+    height: 60px;
+    border: 6px solid var(--gray-color);
+    border-top: 6px solid var(--primary-color);
     border-radius: 50%;
     margin: 0 auto 20px;
-    animation: spin 1s linear infinite;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
 }
 
 @keyframes spin {
@@ -305,6 +350,8 @@ input[type="file"] {
     width: 100%;
     height: auto;
     display: block;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-in-out forwards;
 }
 
 .result-actions {
