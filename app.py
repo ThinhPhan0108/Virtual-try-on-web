@@ -10,11 +10,11 @@ import logging
 
 load_dotenv()
 
-def resize_image(image_data, max_size=(800, 800)):
+def resize_image(image_data, max_size=(1600, 1600)):
     image = Image.open(io.BytesIO(image_data))
     image.thumbnail(max_size)
     img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format='JPEG', quality=85)
+    image.save(img_byte_arr, format='JPEG', quality=95)
     img_byte_arr = img_byte_arr.getvalue()
     return img_byte_arr
 
