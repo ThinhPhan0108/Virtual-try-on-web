@@ -1,85 +1,85 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Thử đồ ảo trực tuyến với công nghệ AI. Virtual Try-On giúp bạn thử quần áo dễ dàng hơn bao giờ hết.">
-    <meta name="keywords" content="thử đồ ảo, virtual try-on, AI, quần áo, thời trang, mua sắm trực tuyến">
-    <title>Thử Đồ Ảo - Virtual Try-On</title>
+    <meta name="description" content="Virtual Try-On powered by AI. Experience online clothing try-on like never before.">
+    <meta name="keywords" content="virtual try-on, AI, clothing, fashion, online shopping">
+    <title>Virtual Try-On</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-tshirt"></i> Thử Đồ Ảo</h1>
-            <p class="subtitle">Thử quần áo trực tuyến với công nghệ AI</p>
+            <h1><i class="fas fa-tshirt"></i> Virtual Try-On</h1>
+            <p class="subtitle">Experience AI-powered virtual try-on for a seamless online shopping experience.</p>
         </header>
 
         <div class="instructions">
             <div class="instruction-step">
                 <div class="step-number">1</div>
-                <div class="step-text">Tải lên ảnh của bạn</div>
+                <div class="step-text">Upload your photo</div>
             </div>
             <div class="instruction-step">
                 <div class="step-number">2</div>
-                <div class="step-text">Tải lên ảnh quần áo</div>
+                <div class="step-text">Upload a garment image</div>
             </div>
             <div class="instruction-step">
                 <div class="step-number">3</div>
-                <div class="step-text">Xem kết quả thử đồ</div>
+                <div class="step-text">See your virtual try-on result</div>
             </div>
         </div>
 
         <div class="upload-container">
             <div class="upload-section">
-                <h2><i class="fas fa-user"></i> Ảnh Người</h2>
-                <label for="person_image" class="file-label">Chọn Ảnh</label>
+                <h2><i class="fas fa-user"></i> Your Photo</h2>
+                <label for="person_image" class="file-label">Choose Image</label>
                 <input type="file" id="person_image" name="person_image" accept="image/*" required>
                 <div id="person-img-preview" class="img-preview"></div>
             </div>
 
             <div class="upload-section">
-                <h2><i class="fas fa-tshirt"></i> Ảnh Quần Áo</h2>
-                <label for="garment_image" class="file-label">Chọn Ảnh</label>
+                <h2><i class="fas fa-tshirt"></i> Garment Image</h2>
+                <label for="garment_image" class="file-label">Choose Image</label>
                 <input type="file" id="garment_image" name="garment_image" accept="image/*" required>
                 <div id="garment-img-preview" class="img-preview"></div>
             </div>
         </div>
 
         <div class="quality-container">
-            <label for="quality">Chất lượng ảnh:</label>
+            <label for="quality">Image Quality:</label>
             <input type="range" id="quality" name="quality" min="0.1" max="1" value="0.7" step="0.1">
             <span id="quality-value">0.7</span>
         </div>
 
         <div class="action-container">
             <button id="try-on-btn" class="primary-btn">
-                <i class="fas fa-magic"></i> Thử Đồ Ngay
+                <i class="fas fa-magic"></i> Try It On!
             </button>
         </div>
 
         <div id="loading" class="loading-container" style="display: none;">
             <div class="loading-spinner"></div>
-            <p>Đang xử lý... Vui lòng đợi trong giây lát. Ảnh của bạn đang được xử lý, vui lòng đợi.</p>
+            <p>Processing... Please wait a moment. Your images are being processed.</p>
         </div>
 
         <div id="result" class="result-container" style="display: none;">
-            <h2><i class="fas fa-check-circle"></i> Kết Quả Thử Đồ</h2>
-            <p>Ảnh của bạn đã được ghép thành công. Xem ảnh kết quả ở bên dưới:</p>
+            <h2><i class="fas fa-check-circle"></i> Virtual Try-On Result</h2>
+            <p>Your images have been successfully merged. View your virtual try-on result below:</p>
             <div class="result-image-container">
-                <img id="output-img" src="" alt="Kết quả thử đồ" />
+                <img id="output-img" src="" alt="Virtual Try-On Result" />
             </div>
-            <p>Nếu bạn không thấy ảnh, hãy thử tải lại trang.</p>
+            <p>If you don't see the image, please try refreshing the page.</p>
             <div class="result-actions">
                 <button id="download-btn" class="secondary-btn">
-                    <i class="fas fa-download"></i> Tải Ảnh
+                    <i class="fas fa-download"></i> Download Image
                 </button>
                 <button id="share-btn" class="secondary-btn">
-                    <i class="fas fa-share-alt"></i> Chia Sẻ
+                    <i class="fas fa-share-alt"></i> Share
                 </button>
                 <button id="try-again-btn" class="secondary-btn">
-                    <i class="fas fa-redo"></i> Thử Lại
+                    <i class="fas fa-redo"></i> Try Again
                 </button>
             </div>
         </div>
@@ -87,11 +87,11 @@
         <div id="error-message" class="error-container" style="display: none;">
             <i class="fas fa-exclamation-circle"></i>
             <p id="error-text"></p>
-            <button id="dismiss-error" class="secondary-btn">Đóng</button>
+            <button id="dismiss-error" class="secondary-btn">Close</button>
         </div>
 
         <footer>
-            <p>© 2025 Thử Đồ Ảo - Công nghệ AI giúp bạn thử quần áo trực tuyến</p>
+            <p>© 2025 Virtual Try-On - AI-powered virtual clothing try-on technology</p>
         </footer>
     </div>
 

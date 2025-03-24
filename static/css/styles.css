@@ -31,6 +31,12 @@ body {
     padding: 20px;
     min-height: 100vh;
     overflow-x: hidden; /* Prevent horizontal scroll */
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Container chính */
@@ -43,6 +49,18 @@ body {
     box-shadow: var(--shadow);
     margin: 20px auto;
     transition: var(--transition);
+    animation: slideIn 0.5s ease-in-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* Header */

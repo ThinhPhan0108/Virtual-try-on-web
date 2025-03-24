@@ -10,13 +10,6 @@ import logging
 
 load_dotenv()
 
-def resize_image(image_data, max_size=(1600, 1600)):
-    image = Image.open(io.BytesIO(image_data))
-    image.thumbnail(max_size)
-    img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format='JPEG', quality=95)
-    img_byte_arr = img_byte_arr.getvalue()
-    return img_byte_arr
 
 PIXELCUT_API_KEY = os.environ.get("PIXELCUT_API_KEY")
 if not PIXELCUT_API_KEY:
@@ -62,9 +55,6 @@ def try_on():
         garment_format = garment_image_obj.format
         garment_size = garment_image_obj.size
         logging.info(f"Garment image format: {garment_format}, size: {garment_size}")
-
-        person_data = resize_image(person_data)
-        garment_data = resize_image(garment_data)
 
         files = {
             'person_image': (person_filename, person_data),
