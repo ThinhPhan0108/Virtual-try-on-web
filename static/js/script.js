@@ -33,14 +33,14 @@ function resizeImage(file, maxWidth, maxHeight) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
 
-            const quality = document.getElementById('quality').value;
+            const quality = document.getElementById('quality').value || 0.5;
 
             canvas.toBlob(blob => {
                 resolve(new File([blob], file.name, {
                     type: file.type,
                     lastModified: file.lastModified
                 }));
-            }, file.type, quality); // Adjust compression quality as needed
+            }, file.type, quality);
         };
         img.onerror = reject;
         img.src = URL.createObjectURL(file);
@@ -81,42 +81,63 @@ document.getElementById('try-on-btn').onclick = () => {
     // Show loading indicator
     document.getElementById('loading').style.display = 'block';
 
-    const formData = new FormData();
-    formData.append('person_image', personFile);
-    formData.append('garment_image', garmentFile);
+    Promise.all([resizeImage(personFile, 200, 200), resizeImage(garmentFile, 200, 200)])
+        .then(([resizedPersonFile, resizedGarmentFile]) => {
+            const formData = new FormData();
+            formData.append('person_image', resizedPersonFile);
+            formData.append('garment_image', resizedGarmentFile);
 
-    fetch('/try-on', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Content-Type': null
-        }
-    })
-    .then(res => {
-        if (!res.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return res.json();
-    })
-    .then(data => {
-        if (data.result_url) {
-            // Hiển thị ảnh kết quả
-            const outputImage = document.getElementById('output-img');
-            outputImage.src = data.result_url;
-            outputImage.style.display = 'block';  // Hiển thị ảnh output
-        } else {
-            // Hiển thị lỗi
-           document.getElementById('error-text').textContent = 'Lỗi: ' + (data.error || 'Không có ảnh trả về');
-           document.getElementById('error-message').style.display = 'block';
-        }
-        // Hide loading indicator
-        document.getElementById('loading').style.display = 'none';
-    })
-    .catch(err => {
-        console.error(err);
-        document.getElementById('error-text').textContent = 'Có lỗi xảy ra, vui lòng thử lại!';
-        document.getElementById('error-message').style.display = 'block';
-        // Hide loading indicator
-        document.getElementById('loading').style.display = 'none';
-    });
+            fetch('/try-on', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
+            })
+            .then(data => {
+                console.log("API Response:", data); // Log the API response
+                if (data.image_data) {
+                    // Hiển thị ảnh kết quả từ base64
+                    const outputImage = document.getElementById('output-img');
+                    try {
+                        outputImage.src = "data:image/jpeg;base64," + data.image_data;
+                        outputImage.style.display = 'block';  // Hiển thị ảnh output
+                        console.log("Output Image Source:", outputImage.src); // Log the output image source
+                    } catch (e) {
+                        console.error("Error setting image source:", e);
+                        document.getElementById('error-text').textContent = 'Lỗi hiển thị ảnh!';
+                        document.getElementById('error-message').style.display = 'block';
+                    }
+                } else if (data.result_url) {
+                    // Hiển thị ảnh kết quả
+                    const outputImage = document.getElementById('output-img');
+                    try {
+                        outputImage.src = data.result_url;
+                        outputImage.style.display = 'block';  // Hiển thị ảnh output
+                        console.log("Output Image Source:", outputImage.src); // Log the output image source
+                    } catch (e) {
+                        console.error("Error setting image source:", e);
+                         document.getElementById('error-text').textContent = 'Lỗi hiển thị ảnh!';
+                        document.getElementById('error-message').style.display = 'block';
+                    }
+                }
+                 else {
+                    // Hiển thị lỗi
+                    document.getElementById('error-text').textContent = 'Lỗi: ' + (data.error || 'Không có ảnh trả về');
+                    document.getElementById('error-message').style.display = 'block';
+                }
+                // Hide loading indicator
+                document.getElementById('loading').style.display = 'none';
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('error-text').textContent = 'Có lỗi xảy ra, vui lòng thử lại!';
+                document.getElementById('error-message').style.display = 'block';
+                // Hide loading indicator
+                document.getElementById('loading').style.display = 'none';
+            });
+        });
 };

@@ -1,43 +1,31 @@
 import os
-import uuid
-import logging
+import io
 from flask import Flask, render_template, request, jsonify
 import requests
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
+from PIL import Image
+import base64
+import logging
 
-# Cấu hình logging
-logging.basicConfig(filename='error.log', level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s: %(message)s')
-
-# Tải biến môi trường từ file .env (nếu có)
-logging.info("Loading environment variables...")
 load_dotenv()
 
-# Lấy API Key từ biến môi trường
+def resize_image(image_data, max_size=(500, 500)):
+    image = Image.open(io.BytesIO(image_data))
+    image.thumbnail(max_size)
+    img_byte_arr = io.BytesIO()
+    image.save(img_byte_arr, format='JPEG', quality=50)
+    img_byte_arr = img_byte_arr.getvalue()
+    return img_byte_arr
+
 PIXELCUT_API_KEY = os.environ.get("PIXELCUT_API_KEY")
 if not PIXELCUT_API_KEY:
-    logging.error("PIXELCUT_API_KEY is not set in the environment variables.")
     raise ValueError("PIXELCUT_API_KEY is not set in the environment variables.")
-NGROK_URL = os.environ.get("NGROK_URL", "127.0.0.1:5000")
 
-# Kiểm tra giá trị API Key và URL ngrok
-# print(f"PIXELCUT_API_KEY: {PIXELCUT_API_KEY}")
-# print(f"NGROK_URL: {NGROK_URL}")
-
-logging.info("Creating Flask app...")
 app = Flask(__name__)
 
-# Thư mục lưu ảnh tải lên
-UPLOAD_FOLDER = 'static/uploads'
-logging.info(f"Creating upload folder: {UPLOAD_FOLDER}")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Endpoint của Pixelcut API
 PIXELCUT_API_ENDPOINT = "https://api.developer.pixelcut.ai/v1/try-on"
 
-# Cho phép các định dạng ảnh cụ thể
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 def allowed_file(filename):
@@ -59,91 +47,63 @@ def try_on():
         if not allowed_file(person_image.filename) or not allowed_file(garment_image.filename):
             return jsonify({'error': 'Chỉ chấp nhận các tệp ảnh với định dạng: png, jpg, jpeg'}), 400
 
-        person_filename = secure_filename(person_image.filename)
+        person_filename = "person_image.jpg"
         person_data = person_image.read()
 
-        garment_filename = secure_filename(garment_image.filename)
+        garment_filename = "garment_image.jpg"
         garment_data = garment_image.read()
-
-        person_content_type = person_image.content_type
-        garment_content_type = garment_image.content_type
-
-        if person_filename.lower().endswith(('.jpg', '.jpeg')):
-            person_content_type = 'image/jpeg'
-        if garment_filename.lower().endswith(('.jpg', '.jpeg')):
-            garment_content_type = 'image/jpeg'
+        person_data = resize_image(person_data)
+        garment_data = resize_image(garment_data)
 
         files = {
-            'person_image': (person_filename, person_data, person_content_type),
-            'garment_image': (garment_filename, garment_data, garment_content_type)
+            'person_image': (person_filename, person_data),
+            'garment_image': (garment_filename, garment_data)
         }
 
-        logging.info(f"Person image content type: {person_content_type}")
-        logging.info(f"Garment image content type: {garment_content_type}")
-
         headers = {'X-API-KEY': PIXELCUT_API_KEY}
-
-        print("Request Headers:", request.headers)
-        print("Files:", files)
-
-        # Prepare the data for printing
-        files_str = ""
-        for k, v in files.items():
-            files_str += f"{k}: filename={v[0]}, content_type={v[2]}\n"
-
-        print(f"Files data:\n{files_str}")
+        logging.info(f"Using Pixelcut API key: {PIXELCUT_API_KEY}")
 
         try:
             response = requests.post(PIXELCUT_API_ENDPOINT, headers=headers, files=files)
-            response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+            response.raise_for_status()
         except requests.exceptions.RequestException as req_err:
-            logging.error(f"Lỗi khi gửi yêu cầu đến Pixelcut API: {str(req_err)}")
-            return jsonify({'error': f'Lỗi khi gửi yêu cầu đến Pixelcut API: {str(req_err)}'}), 500
+            logging.error(f"Error sending request to Pixelcut API: {str(req_err)}")
+            return jsonify({'error': f'Error sending request to Pixelcut API: {str(req_err)}'}), 500
 
         if response.status_code == 200:
             result = response.json()
 
-            # Nếu API trả về URL ảnh kết quả
             if 'result_url' in result:
                 try:
-                    # Tải ảnh từ URL kết quả
                     result_url = result['result_url']
                     img_response = requests.get(result_url, stream=True)
                     img_response.raise_for_status()
 
                     if img_response.status_code == 200:
-                        # Tạo tên file duy nhất cho ảnh kết quả
-                        result_filename = f"result_{uuid.uuid4()}.jpg"
-                        result_path = os.path.join(app.config['UPLOAD_FOLDER'], result_filename)
-
-                        # Lưu ảnh vào thư mục uploads
-                        with open(result_path, 'wb') as f:
-                            for chunk in img_response.iter_content(1024):
-                                f.write(chunk)
-
-                        # Trả về URL local của ảnh kết quả
-                        local_result_url = f"/static/uploads/{result_filename}"
-                        result['local_result_url'] = local_result_url
+                        img_byte_arr = io.BytesIO()
+                        for chunk in img_response.iter_content(1024):
+                            img_byte_arr.write(chunk)
+                        img_byte_arr = img_byte_arr.getvalue()
+                        result['image_data'] = base64.b64encode(img_byte_arr).decode('utf-8')
                 except requests.exceptions.RequestException as img_err:
-                    logging.error(f"Lỗi khi tải ảnh kết quả: {str(img_err)}")
-                    result['local_result_url'] = None  # Set a default value
+                    logging.error(f"Error downloading result image: {str(img_err)}")
+                    result['image_data'] = None
                 except Exception as img_error:
-                    logging.error(f"Lỗi khi xử lý ảnh kết quả: {str(img_error)}")
-                    result['local_result_url'] = None  # Set a default value
+                    logging.error(f"Error processing result image: {str(img_error)}")
+                    result['image_data'] = None
 
             return jsonify(result)
         else:
-            error_message = response.json().get('error', 'Không có thông báo lỗi từ API')
-            logging.error(f"Lỗi từ API: {response.status_code} - {error_message}")
-            return jsonify({'error': f'Lỗi từ API: {response.status_code} - {error_message}'}), 400
+            error_message = response.json().get('error', 'No error message from API')
+            logging.error(f"API Error: {response.status_code} - {error_message}")
+            return jsonify({'error': f'API Error: {response.status_code} - {error_message}'}), 400
 
     except ValueError as ve:
-        logging.error(f"Lỗi cấu hình: {str(ve)}")
-        return jsonify({'error': f'Lỗi cấu hình: {str(ve)}'}), 400
+        logging.error(f"Configuration error: {str(ve)}")
+        return jsonify({'error': f'Configuration error: {str(ve)}'}), 400
     except Exception as e:
-        logging.error(f"Có lỗi xảy ra: {str(e)}")
-        print(f"Exception: {str(e)}")
-        return jsonify({'error': f'Có lỗi xảy ra: {str(e)}'}), 500
+        logging.exception("An unexpected error occurred:")
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
