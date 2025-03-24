@@ -6,7 +6,12 @@ import requests
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 
+# Cấu hình logging
+logging.basicConfig(filename='error.log', level=logging.DEBUG,
+                    format='%(asctime)s %(levelname)s: %(message)s')
+
 # Tải biến môi trường từ file .env (nếu có)
+logging.info("Loading environment variables...")
 load_dotenv()
 
 # Lấy API Key từ biến môi trường
@@ -20,14 +25,12 @@ NGROK_URL = os.environ.get("NGROK_URL", "127.0.0.1:5000")
 # print(f"PIXELCUT_API_KEY: {PIXELCUT_API_KEY}")
 # print(f"NGROK_URL: {NGROK_URL}")
 
-# Cấu hình logging
-logging.basicConfig(filename='error.log', level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s: %(message)s')
-
+logging.info("Creating Flask app...")
 app = Flask(__name__)
 
 # Thư mục lưu ảnh tải lên
 UPLOAD_FOLDER = 'static/uploads'
+logging.info(f"Creating upload folder: {UPLOAD_FOLDER}")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -62,10 +65,21 @@ def try_on():
         garment_filename = secure_filename(garment_image.filename)
         garment_data = garment_image.read()
 
+        person_content_type = person_image.content_type
+        garment_content_type = garment_image.content_type
+
+        if person_filename.lower().endswith(('.jpg', '.jpeg')):
+            person_content_type = 'image/jpeg'
+        if garment_filename.lower().endswith(('.jpg', '.jpeg')):
+            garment_content_type = 'image/jpeg'
+
         files = {
-            'person_image': (person_filename, person_data, person_image.content_type),
-            'garment_image': (garment_filename, garment_data, garment_image.content_type)
+            'person_image': (person_filename, person_data, person_content_type),
+            'garment_image': (garment_filename, garment_data, garment_content_type)
         }
+
+        logging.info(f"Person image content type: {person_content_type}")
+        logging.info(f"Garment image content type: {garment_content_type}")
 
         headers = {'X-API-KEY': PIXELCUT_API_KEY}
 
