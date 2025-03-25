@@ -89,10 +89,19 @@ def try_on():
                         # Save the image to the static/uploads directory
                         filename = secure_filename(os.urandom(16).hex() + '.jpg')
                         filepath = 'static/uploads/' + filename
-                        with open(filepath, 'wb') as f:
-                            f.write(img_byte_arr)
+                        absolute_filepath = os.path.abspath(filepath)
+                        logging.info(f"Saving result image to: {absolute_filepath}")
 
-                        result_url =  '/' + filepath  # Construct the URL
+                        # Create the static/uploads directory if it doesn't exist
+                        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
+                        # Open the image from bytes
+                        img = Image.open(io.BytesIO(img_byte_arr))
+
+                        # Save the image with higher quality
+                        img.save(filepath, "JPEG", quality=95)
+
+                        result_url = filepath  # Construct the URL
                         result['result_url'] = result_url
                 except requests.exceptions.RequestException as img_err:
                     logging.error(f"Error downloading result image: {str(img_err)}")
